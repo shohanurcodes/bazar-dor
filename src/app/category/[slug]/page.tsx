@@ -108,7 +108,7 @@ return ( <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
     </div>
 
     <p className="mt-2 text-sm text-gray-600">
-      এই ক্যাটাগরির পণ্যের বর্তমান বাজারদর দেখুন।
+       ৪ টি পণ্যের আজকের দাম ও পরিবর্তন
     </p>
   </section>
 
@@ -117,7 +117,7 @@ return ( <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
     <h2 className="text-xl font-bold text-gray-900">
       সকল পণ্য
       <span className="ml-2 text-sm font-normal text-gray-500">
-        ({formatPrice(products.length)}টি)
+        ({formatPrice(products.length-1)}টি)
       </span>
     </h2>
 
@@ -133,8 +133,8 @@ return ( <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
 
   {/* Products grid */}
   {sortedProducts.length > 0 ? (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-      {sortedProducts.map((product: Product) => (
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3">
+      {sortedProducts.slice(0,4).map((product: Product) => (
         <ProductCard
           key={product.id}
           product={product}

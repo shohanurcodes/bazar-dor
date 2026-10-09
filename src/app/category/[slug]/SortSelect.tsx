@@ -35,7 +35,7 @@ router.push(url, { scroll: false });
 return ( <div> <label htmlFor="sort" className="sr-only">
 পণ্যের দাম অনুযায়ী সাজান </label>
 
-```
+
   <select
     id="sort"
     value={sort}
