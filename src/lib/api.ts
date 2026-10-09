@@ -12,6 +12,7 @@ export interface Product {
   id: number;
   slug: string;
   nameBn: string;
+  category: string;
   image: string;
   unit: string;
   today: number;
@@ -44,7 +45,25 @@ export async function getCategories(): Promise<Category[]> {
 
   return res.json();
 }
+  
+export async function getProductsByCategory(
+  slug: string,
+): Promise<Product[]> {
+  const res = await fetch(
+    `${BASE_URL}/products?category=${encodeURIComponent(slug)}`,
+    {
+      next: {
+        revalidate: 300,
+      },
+    },
+  );
 
+  if (!res.ok) {
+    throw new Error("Failed to fetch category products");
+  }
+
+  return res.json();
+}
 export async function getProducts(): Promise<Product[]> {
   const res = await fetch(`${BASE_URL}/products`, {
     next: {
