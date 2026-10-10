@@ -3,8 +3,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
-import Link from 'next/link';
 import {
   Button,
   Card,
@@ -27,6 +28,8 @@ export default function SignInPage() {
   ) {
     event.preventDefault();
 
+    if (loading) return;
+
     setLoading(true);
     setError("");
 
@@ -37,16 +40,23 @@ export default function SignInPage() {
       });
 
       if (result.error) {
-        setError(
-          result.error.message || "Invalid email or password."
-        );
+        const message =
+          result.error.message || "Invalid email or password.";
+
+        setError(message);
+        toast.error(message);
         return;
       }
+
+      toast.success("Signed in successfully!");
 
       router.replace("/");
       router.refresh();
     } catch {
-      setError("Something went wrong. Please try again.");
+      const message = "Something went wrong. Please try again.";
+
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -56,6 +66,7 @@ export default function SignInPage() {
     <main className="flex min-h-[70vh] items-center justify-center p-4">
       <Card className="w-full max-w-md p-6">
         <h1 className="text-2xl font-bold">Welcome Back</h1>
+
         <p className="mb-4 text-sm text-gray-500">
           Sign in to your Bazar Dor account.
         </p>
@@ -65,6 +76,7 @@ export default function SignInPage() {
             <Label>Email</Label>
             <Input
               type="email"
+              autoComplete="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="Enter your email"
@@ -75,6 +87,7 @@ export default function SignInPage() {
             <Label>Password</Label>
             <Input
               type="password"
+              autoComplete="current-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               placeholder="Enter your password"

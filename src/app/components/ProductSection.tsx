@@ -5,7 +5,7 @@ export default async function ProductSection() {
   const products = await getProducts();
 
   return (
-    <section className="bg-[#f6faf7] py-12">
+    <section id="products" className="bg-[#f6faf7] py-12 scroll-mt-4">
       <div className="mx-auto max-w-6xl px-4">
 
         {/* Section Header */}

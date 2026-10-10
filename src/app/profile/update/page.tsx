@@ -4,13 +4,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import {
-  Button,
-  Form,
-  Input,
-  Label,
-  TextField,
-} from "@heroui/react";
+import { toast } from "sonner";
+
+import { Button, Input, Label } from "@heroui/react";
 
 export default function UpdateProfilePage() {
   const router = useRouter();
@@ -18,8 +14,6 @@ export default function UpdateProfilePage() {
 
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
   useEffect(() => {
     if (session?.user) {
@@ -31,13 +25,14 @@ export default function UpdateProfilePage() {
     event: React.FormEvent<HTMLFormElement>
   ) {
     event.preventDefault();
-    setError("");
-    setMessage("");
+
+    if (loading) return;
 
     const trimmedName = name.trim();
 
+    // Custom validation runs before the API request.
     if (!trimmedName) {
-      setError("Name is required.");
+      toast.error("Name is required.");
       return;
     }
 
@@ -49,29 +44,36 @@ export default function UpdateProfilePage() {
       });
 
       if (result.error) {
-        setError(result.error.message || "Could not update your name.");
+        toast.error(
+          result.error.message || "Could not update your name."
+        );
         return;
       }
 
-      setMessage("Name updated successfully!");
       await authClient.getSession();
+
+      toast.success("Profile updated successfully!");
+
       router.replace("/profile");
       router.refresh();
     } catch {
-      setError("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   }
 
   if (isPending) {
-    return <p className="p-8 text-center">Loading profile...</p>;
+    return (
+      <p className="p-8 text-center">Loading profile...</p>
+    );
   }
 
   if (!session) {
     return (
       <main className="p-8 text-center">
         <p>Please sign in to update your profile.</p>
+
         <Button onPress={() => router.push("/sign-in")}>
           Sign In
         </Button>
@@ -85,31 +87,28 @@ export default function UpdateProfilePage() {
         <h1 className="mb-2 text-2xl font-bold">
           Update Information
         </h1>
+
         <p className="mb-6 text-sm text-gray-500">
           Update your profile name.
         </p>
 
-        <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <TextField className="w-full" isRequired>
-            <Label>Name</Label>
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="flex flex-col gap-4"
+        >
+          <div className="flex w-full flex-col gap-2">
+            <Label htmlFor="profile-name">Name</Label>
+
             <Input
+              id="profile-name"
               value={name}
               onChange={(event) => setName(event.target.value)}
               placeholder="Enter your name"
+              autoComplete="name"
+              aria-required="true"
             />
-          </TextField>
-
-          {error && (
-            <p role="alert" className="text-sm text-red-600">
-              {error}
-            </p>
-          )}
-
-          {message && (
-            <p role="status" className="text-sm text-green-700">
-              {message}
-            </p>
-          )}
+          </div>
 
           <Button
             type="submit"
@@ -118,7 +117,7 @@ export default function UpdateProfilePage() {
           >
             {loading ? "Updating..." : "Update Information"}
           </Button>
-        </Form>
+        </form>
       </div>
     </main>
   );

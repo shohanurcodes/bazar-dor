@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "sonner";
 import {
   Button,
   Card,
@@ -21,11 +22,15 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function handleSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+
+    if (loading) return;
+
     setError("");
     setLoading(true);
 
@@ -37,14 +42,23 @@ export default function SignupPage() {
       });
 
       if (result.error) {
-        setError(result.error.message || "Registration failed.");
+        const message =
+          result.error.message || "Registration failed.";
+
+        setError(message);
+        toast.error(message);
         return;
       }
+
+      toast.success("Account created successfully!");
 
       router.push("/");
       router.refresh();
     } catch {
-      setError("Something went wrong. Please try again.");
+      const message = "Something went wrong. Please try again.";
+
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -88,7 +102,7 @@ export default function SignupPage() {
               placeholder="Enter your full name"
               autoComplete="name"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(event) => setName(event.target.value)}
             />
           </TextField>
 
@@ -104,7 +118,7 @@ export default function SignupPage() {
               placeholder="you@example.com"
               autoComplete="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(event) => setEmail(event.target.value)}
             />
           </TextField>
 
@@ -121,7 +135,7 @@ export default function SignupPage() {
               autoComplete="new-password"
               minLength={8}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(event) => setPassword(event.target.value)}
             />
           </TextField>
 
@@ -139,7 +153,7 @@ export default function SignupPage() {
         <div className="mt-6 border-t border-default-200 pt-5 text-center text-sm text-default-500">
           Already have an account?{" "}
           <Link
-            href="/signin"
+            href="/sign-in"
             className="font-semibold text-primary hover:underline"
           >
             Sign in
