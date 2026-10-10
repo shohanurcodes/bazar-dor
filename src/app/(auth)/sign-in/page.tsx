@@ -153,7 +153,7 @@ export default function SignInPage() {
 
           <Button
             type="button"
-            variant="bordered"
+            variant="outline"
             className="w-full"
             isDisabled={isBusy}
             onPress={() => handleSocialSignIn("google")}
@@ -165,7 +165,7 @@ export default function SignInPage() {
 
           <Button
             type="button"
-            variant="bordered"
+            variant="outline"
             className="w-full"
             isDisabled={isBusy}
             onPress={() => handleSocialSignIn("github")}
