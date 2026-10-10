@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -21,6 +20,8 @@ export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [socialLoading, setSocialLoading] = useState("");
+
   const [error, setError] = useState("");
 
   async function handleSubmit(
@@ -28,7 +29,7 @@ export default function SignInPage() {
   ) {
     event.preventDefault();
 
-    if (loading) return;
+    if (loading || socialLoading) return;
 
     setLoading(true);
     setError("");
@@ -49,18 +50,49 @@ export default function SignInPage() {
       }
 
       toast.success("Signed in successfully!");
-
       router.replace("/");
       router.refresh();
     } catch {
       const message = "Something went wrong. Please try again.";
-
       setError(message);
       toast.error(message);
     } finally {
       setLoading(false);
     }
   }
+
+  async function handleSocialSignIn(
+    provider: "google" | "github"
+  ) {
+    if (loading || socialLoading) return;
+
+    setSocialLoading(provider);
+    setError("");
+
+    try {
+      const result = await authClient.signIn.social({
+        provider,
+        callbackURL: "/",
+      });
+
+      if (result.error) {
+        const message =
+          result.error.message ||
+          `Could not sign in with ${provider}.`;
+
+        setError(message);
+        toast.error(message);
+        setSocialLoading("");
+      }
+    } catch {
+      const message = `Could not sign in with ${provider}. Please try again.`;
+      setError(message);
+      toast.error(message);
+      setSocialLoading("");
+    }
+  }
+
+  const isBusy = loading || Boolean(socialLoading);
 
   return (
     <main className="flex min-h-[70vh] items-center justify-center p-4">
@@ -71,7 +103,10 @@ export default function SignInPage() {
           Sign in to your Bazar Dor account.
         </p>
 
-        <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <Form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4"
+        >
           <TextField className="w-full" isRequired>
             <Label>Email</Label>
             <Input
@@ -103,9 +138,41 @@ export default function SignInPage() {
           <Button
             type="submit"
             className="w-full"
-            isDisabled={loading}
+            isDisabled={isBusy}
           >
             {loading ? "Signing in..." : "Sign In"}
+          </Button>
+
+          <div className="flex w-full items-center gap-3">
+            <div className="h-px flex-1 bg-gray-200" />
+            <span className="text-xs text-gray-500">
+              OR CONTINUE WITH
+            </span>
+            <div className="h-px flex-1 bg-gray-200" />
+          </div>
+
+          <Button
+            type="button"
+            variant="bordered"
+            className="w-full"
+            isDisabled={isBusy}
+            onPress={() => handleSocialSignIn("google")}
+          >
+            {socialLoading === "google"
+              ? "Connecting to Google..."
+              : "Continue with Google"}
+          </Button>
+
+          <Button
+            type="button"
+            variant="bordered"
+            className="w-full"
+            isDisabled={isBusy}
+            onPress={() => handleSocialSignIn("github")}
+          >
+            {socialLoading === "github"
+              ? "Connecting to GitHub..."
+              : "Continue with GitHub"}
           </Button>
 
           <p className="text-sm">

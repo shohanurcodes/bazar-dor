@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "dev": "cross-env NODE_OPTIONS=--import=./scripts/dns-fix.mjs next dev",
+    "build": "cross-env NODE_OPTIONS=--import=./scripts/dns-fix.mjs next build",
+    "start": "cross-env NODE_OPTIONS=--import=./scripts/dns-fix.mjs next start",
+    "lint": "es-lint"
   },
   "dependencies": {
     "@better-auth/mongo-adapter": "^1.7.7",
@@ -26,6 +26,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "^16.4.0",
     "tailwindcss": "^4",

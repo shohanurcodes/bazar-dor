@@ -1,4 +1,3 @@
-
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { MongoClient } from "mongodb";
@@ -23,6 +22,15 @@ export const auth = betterAuth({
     enabled: true,
   },
 
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["google"],
+      disableImplicitLinking: false,
+      requireLocalEmailVerified:false,
+    },
+  },
+
   socialProviders: {
     ...(process.env.GOOGLE_CLIENT_ID &&
     process.env.GOOGLE_CLIENT_SECRET
@@ -30,6 +38,7 @@ export const auth = betterAuth({
           google: {
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            requireEmailVerification: true,
           },
         }
       : {}),
