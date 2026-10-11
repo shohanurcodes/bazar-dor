@@ -109,16 +109,14 @@ async function CategoryContent({
         </div>
 
         <p className="mt-2 text-sm text-gray-600">
-          ৪ টি পণ্যের আজকের দাম ও পরিবর্তন
+          ৩ টি পণ্যের আজকের দাম ও পরিবর্তন
         </p>
       </section>
 
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-xl font-bold text-gray-900">
-          সকল পণ্য
-          <span className="ml-2 text-sm font-normal text-gray-500">
-            ({formatPrice(products.length)}টি)
-          </span>
+          মোট ৩ টি পণ্য দেখানো হচ্ছে
+          
         </h2>
 
         <SortSelect
