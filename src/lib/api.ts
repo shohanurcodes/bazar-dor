@@ -1,4 +1,4 @@
-const BASE_URL = "https://openapi.programming-hero.com/api/bazardor";
+const BASE_URL = "https://api.api-store.workers.dev/api/bazardor";
 
 export interface Category {
 id: string;
