@@ -131,7 +131,7 @@ async function CategoryContent({
 
       {sortedProducts.length > 0 ? (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3">
-          {sortedProducts.slice(0, 4).map((product: Product) => (
+          {sortedProducts.slice(0, 3).map((product: Product) => (
             <ProductCard
               key={product.id}
               product={product}
